@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <mutex>
 
 struct socket_t;
 typedef std::shared_ptr<socket_t> socket_ptr;
@@ -12,6 +13,10 @@ static constexpr size_t RPC_CONN_CAPS_SIZE = 24;
 
 struct socket_t {
     ~socket_t();
+
+    // serializes full request-response cycles; without this, concurrent
+    // callers interleave frames on the wire and both ends deadlock
+    std::recursive_mutex cmd_mutex;
 
     bool send_data(const void * data, size_t size);
     bool recv_data(void * data, size_t size);
