@@ -4956,7 +4956,7 @@ static void ggml_vk_load_shaders(vk_device& device, vk_pipeline requested) {
             device->subgroup_size > 32;
         static const int dense_wave32 = [] {
             const char * e = getenv("GGML_VK_DENSE_WAVE32");
-            return e ? atoi(e) : 0;  // off by default until measured here
+            return e ? atoi(e) : 2;  // default 2: measured +4.0% pp at 32K/64K on 27B v3fp4 (2026-09-18, arc-3 IMP-1), chain medians 100
         }();
 
         const bool dense_wave32_active = dense_wave32_possible && dense_wave32 != 0;
